@@ -56,7 +56,7 @@ namespace Catalyte.Apparel.Data.Model
         [MaxLength(16)]
         public string CardNumber { get; set; }
 
-        public int CVV { get; set; }
+        public string CVV { get; set; }
 
         [MaxLength(5)]
         public string Expiration { get; set; }

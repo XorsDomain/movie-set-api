@@ -4,6 +4,7 @@ using Catalyte.Apparel.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Catalyte.Apparel.Data.Repositories
@@ -22,11 +23,21 @@ namespace Catalyte.Apparel.Data.Repositories
             _ctx = ctx;
         }
 
+        public async Task<IEnumerable<Purchase>> GetPurchasesByEmailAsync(string email)
+        {
+            return await _ctx.Purchases
+               .Where(e => e.BillingEmail.Equals(email))
+               .Include(p => p.LineItems)
+               .ThenInclude(p => p.Product)
+               .AsNoTracking()
+               .ToListAsync();
+        }
+
         public async Task<List<Purchase>> GetAllPurchasesAsync()
         {
             return await _ctx.Purchases
-                .Include(p => p.LineItems)
-                .ThenInclude(p => p.Product)
+                .Where(e => e.BillingEmail == null)
+                .AsNoTracking()
                 .ToListAsync();
         }
 

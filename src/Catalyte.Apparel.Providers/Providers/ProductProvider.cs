@@ -1,14 +1,10 @@
-﻿using AutoMapper;
-using Catalyte.Apparel.Data.Interfaces;
+﻿using Catalyte.Apparel.Data.Interfaces;
 using Catalyte.Apparel.Data.Model;
-using Catalyte.Apparel.DTOs.Products;
 using Catalyte.Apparel.Providers.Interfaces;
-using Catalyte.Apparel.Utilities;
 using Catalyte.Apparel.Utilities.HttpResponseExceptions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Catalyte.Apparel.Providers.Providers
@@ -50,22 +46,70 @@ namespace Catalyte.Apparel.Providers.Providers
             {
                 _logger.LogInformation($"Product with id: {productId} could not be found.");
                 throw new NotFoundException($"Product with id: {productId} could not be found.");
+
             }
 
             return product;
         }
 
         /// <summary>
-        /// Asynchronously retrieves all products from the database.
+        /// Asynchronously retrieves the product or products with the provided field parameters from the database.
         /// </summary>
-        /// <returns>All products in the database.</returns>
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        /// <param name="demographic">demographic of the product to retrieve</param>
+        /// <param name="category">category of the product to retrieve</param>
+        /// <param name="brand">brand of the product to retrieve</param>
+        /// <param name="material">material of the product to retrieve</param>
+        /// <param name="primarycolorcode">primary of the product to retrieve</param>
+        /// <param name="secondarycolorcode">secondary color of the product to retrieve</param>
+        /// <param name="minprice">minimum price of the product to retrieve</param>
+        /// <param name="maxprice">maximum price of the product to retrieve</param>
+        /// <returns>the product or products</returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        public async Task <IEnumerable<Product>> FilterProductsAsync(
+            string[] demographic,
+            string[] category,
+            string[] brand,
+            string[] material,
+            string[] primarycolorcode,
+            string[] secondarycolorcode,
+            decimal minprice, decimal maxprice)
         {
             IEnumerable<Product> products;
 
             try
             {
-                products = await _productRepository.GetProductsAsync();
+                products = await _productRepository.FilterProductsAsync(
+                    demographic,
+                    category,
+                    brand,
+                    material,
+                    primarycolorcode,
+                    secondarycolorcode,
+                    minprice,
+                    maxprice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw new ServiceUnavailableException("There was a problem connecting to the database.");
+               // throw new Exception(ex.Message);
+            }
+            
+            return products;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves all product categories from the database.
+        /// </summary>
+        /// <returns>All categories in the database.</returns>
+        public async Task<IEnumerable<string>> GetProductsCategoriesAsync()
+        {
+            IEnumerable<string> categories;
+
+            try
+            {
+                categories = await _productRepository.GetProductsCategoriesAsync();
             }
             catch (Exception ex)
             {
@@ -73,7 +117,27 @@ namespace Catalyte.Apparel.Providers.Providers
                 throw new ServiceUnavailableException("There was a problem connecting to the database.");
             }
 
-            return products;
+            return categories;
+        }
+        /// <summary>
+        /// Asynchronously retrieves all product types from the database.
+        /// </summary>
+        /// <returns>All types in the database.</returns>
+        public async Task<IEnumerable<string>> GetProductsTypesAsync()
+        {
+            IEnumerable<string> types;
+
+            try
+            {
+                types = await _productRepository.GetProductsTypesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw new ServiceUnavailableException("There was a problem connecting to the database.");
+            }
+
+            return types;
         }
     }
 }

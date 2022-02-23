@@ -28,19 +28,7 @@ namespace Catalyte.Apparel.API.Controllers
             _mapper = mapper;
             _productProvider = productProvider;
         }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsAsync()
-        {
-            _logger.LogInformation("Request received for GetProductsAsync");
-
-            var products = await _productProvider.GetProductsAsync();
-            var productDTOs = _mapper.Map<IEnumerable<ProductDTO>>(products);
-
-            return Ok(productDTOs);
-        }
-
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProductByIdAsync(int id)
         {
             _logger.LogInformation($"Request received for GetProductByIdAsync for id: {id}");
@@ -49,6 +37,53 @@ namespace Catalyte.Apparel.API.Controllers
             var productDTO = _mapper.Map<ProductDTO>(product);
 
             return Ok(productDTO);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> FilterProductsAsync(
+            [FromQuery(Name = "demographic")] string[] demographic,
+            [FromQuery(Name = "category")] string[] category,
+            [FromQuery(Name = "brand")] string[] brand,
+            [FromQuery(Name = "material")] string[] material,
+            [FromQuery(Name = "primarycolorcode")] string[] primarycolorcode,
+            [FromQuery(Name = "secondarycolorcode")] string[] secondarycolorcode,
+            [FromQuery(Name = "minprice")] decimal minprice,
+            [FromQuery(Name = "maxprice")] decimal maxprice)
+        {
+            var result = await _productProvider.FilterProductsAsync(
+                demographic,
+                category,
+                brand,
+                material,
+                primarycolorcode,
+                secondarycolorcode,
+                minprice,
+                maxprice);
+
+            IEnumerable<ProductDTO> productDTO = _mapper.Map<IEnumerable<ProductDTO>>(result);
+            return Ok(productDTO);
+        }
+        [HttpGet]
+        [Route("/products/categories")]
+        public async Task<ActionResult<IEnumerable<string>>> GetProductsCategoriesAsync()
+        {
+            _logger.LogInformation("Request received for GetProductsCategories");
+
+            var categories = await _productProvider.GetProductsCategoriesAsync();
+            var productDTOs = _mapper.Map<IEnumerable<string>>(categories);
+
+            return Ok(productDTOs);
+        }
+        [HttpGet]
+        [Route("/products/types")]
+        public async Task<ActionResult<IEnumerable<string>>> GetProductsTypesAsync()
+        {
+            _logger.LogInformation("Request received for GetProductsCategories");
+
+            var categories = await _productProvider.GetProductsTypesAsync();
+            var productDTOs = _mapper.Map<IEnumerable<string>>(categories);
+
+            return Ok(productDTOs);
         }
     }
 }

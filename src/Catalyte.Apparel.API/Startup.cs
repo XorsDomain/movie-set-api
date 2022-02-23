@@ -1,5 +1,5 @@
 ﻿using Catalyte.Apparel.API.Filters;
-﻿using System.Net.Mime;
+using System.Net.Mime;
 using Catalyte.Apparel.Data;
 using Catalyte.Apparel.Data.Context;
 using Catalyte.Apparel.Providers;
@@ -16,6 +16,8 @@ namespace Catalyte.Apparel.API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -25,8 +27,6 @@ namespace Catalyte.Apparel.API
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -50,19 +50,6 @@ namespace Catalyte.Apparel.API
             //        //options.ClientId = googleAuthNSection["ClientId"];
             //        //options.ClientSecret = googleAuthNSection["ClientSecret"];
             //    });            //services.AddAuthentication()
-            //    .AddGoogle(options =>
-            //    {
-            //        // === GOOGLE AUTH W/O SECRETS MANAGER (USED FOR PROJECT -> EASIER TO MANAGE) ===
-            //        //options.ClientId = Constants.GOOGLE_CLIENT_ID;
-            //        //options.ClientSecret = Constants.GOOGLE_CLIENT_SECRET;
-
-            //        // === GOOGLE AUTH WITH SECRETS MANAGER (BEST PRACTICE -> MORE INVOLVED) ===
-            //        //IConfigurationSection googleAuthNSection =
-            //        //    Configuration.GetSection("Authentication:Google");
-
-            //        //options.ClientId = googleAuthNSection["ClientId"];
-            //        //options.ClientSecret = googleAuthNSection["ClientSecret"];
-            //    });
 
             services.AddControllers(options =>
             {
@@ -79,15 +66,15 @@ namespace Catalyte.Apparel.API
                     };
                 });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalyte.Apparel.API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalyte.Apparel.API", Version = "v1" });
             });
 
             //Enable CORS
-            services.AddCors(c =>
+            services.AddCors(options =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                options.AddPolicy("AllowOrigin", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
         }
 
@@ -98,11 +85,11 @@ namespace Catalyte.Apparel.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalyte.Apparel.API v1"));
-
-                //Enable CORS
-                app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalyte.Apparel.API v1"));
             }
+
+            //Enable CORS
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             // Resets data on API startup
             db.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");

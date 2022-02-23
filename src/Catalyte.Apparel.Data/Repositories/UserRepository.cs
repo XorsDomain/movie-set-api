@@ -21,12 +21,15 @@ namespace Catalyte.Apparel.Data.Repositories
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            return await _ctx.Users.FindAsync(id);
+            return await _ctx.Users
+                .AsNoTracking()
+                .WhereUserIdEquals(id)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _ctx.Users.AsQueryable().WhereUserEmailEquals(email).SingleOrDefaultAsync();
+            return await _ctx.Users.AsNoTracking().WhereUserEmailEquals(email).SingleOrDefaultAsync();
         }
 
         public async Task<User> CreateUserAsync(User user)

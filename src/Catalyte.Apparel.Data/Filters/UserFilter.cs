@@ -12,5 +12,10 @@ namespace Catalyte.Apparel.Data.Filters
         {
             return users.Where(u => u.Email == email).AsQueryable();
         }
+
+        public static IQueryable<User> WhereUserIdEquals(this IQueryable<User> users, int id)
+        {
+            return users.Where(u => u.Id == id).AsQueryable();
+        }
     }
 }

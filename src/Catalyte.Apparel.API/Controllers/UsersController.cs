@@ -60,7 +60,7 @@ namespace Catalyte.Apparel.API.Controllers
             [FromHeader(Name = "Authorization")] string bearerToken,
             [FromBody] UserDTO userToUpdate)
         {
-            _logger.LogInformation("Request received for update user");
+            _logger.LogInformation("Request received for UpdateUserAsync");
 
             var user = _mapper.Map<User>(userToUpdate);
             var updatedUser = await _userProvider.UpdateUserAsync(bearerToken, id, user);

@@ -9,9 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Catalyte.Apparel.API.Controllers
 {
-    /// <summary>
-    /// The PurchasessController exposes endpoints for purchase related actions.
-    /// </summary>
+
     [ApiController]
     [Route("/purchases")]
     public class PurchasesController : ControllerBase
@@ -42,6 +40,20 @@ namespace Catalyte.Apparel.API.Controllers
             return Ok(purchaseDTOs);
         }
 
+        [HttpGet("{email}")]
+        public async Task<ActionResult<IEnumerable<PurchaseDTO>>> GetPurchasesByEmailAsync(string email)
+        {
+
+            var purchases = await _purchaseProvider.GetPurchasesByEmailAsync(email);
+            var purchaseDTOs = _mapper.MapPurchasesToPurchaseDtos(purchases);
+
+            if (purchases != null)
+            {
+                return Ok(purchaseDTOs);
+            }
+            return NotFound();
+        }
+
         [HttpPost]
         public async Task<ActionResult<List<PurchaseDTO>>> CreatePurchaseAsync([FromBody] CreatePurchaseDTO model)
         {
@@ -51,7 +63,7 @@ namespace Catalyte.Apparel.API.Controllers
             var savedPurchase = await _purchaseProvider.CreatePurchasesAsync(newPurchase);
             var purchaseDTO = _mapper.MapPurchaseToPurchaseDto(savedPurchase);
 
-            if (purchaseDTO != null)
+            if (purchaseDTO == null)
             {
                 return NoContent();
             }

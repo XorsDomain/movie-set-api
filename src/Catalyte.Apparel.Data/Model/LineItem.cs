@@ -21,6 +21,7 @@ namespace Catalyte.Apparel.Data.Model
 
         public Product Product { get; set; }
 
+
         private sealed class PurchaseIdProductIdQuantityEqualityComparer : IEqualityComparer<LineItem>
         {
             public bool Equals(LineItem x, LineItem y)

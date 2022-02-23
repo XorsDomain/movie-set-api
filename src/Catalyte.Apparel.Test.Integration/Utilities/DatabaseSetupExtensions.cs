@@ -16,7 +16,10 @@ namespace Catalyte.Apparel.Test.Integration.Utilities
 
         public static void ReinitializeDatabaseForTests(this ApparelCtx context)
         {
+            context.Reviews.RemoveRange(context.Reviews);
             context.Products.RemoveRange(context.Products);
+            context.LineItems.RemoveRange(context.LineItems);
+            context.Purchases.RemoveRange(context.Purchases);
             context.InitializeDatabaseForTests();
         }
     }

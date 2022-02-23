@@ -16,34 +16,45 @@ namespace Catalyte.Apparel.Providers.Providers
     {
         private readonly ILogger<PurchaseProvider> _logger;
         private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IProductRepository _productRepository;
 
-        public PurchaseProvider(IPurchaseRepository purchaseRepository, ILogger<PurchaseProvider> logger)
+        public PurchaseProvider(IPurchaseRepository purchaseRepository, ILogger<PurchaseProvider> logger, IProductRepository productRepository)
         {
             _logger = logger;
             _purchaseRepository = purchaseRepository;
+            _productRepository = productRepository;
         }
+
 
         /// <summary>
         /// Retrieves all purchases from the database.
         /// </summary>
-        /// <param name="page">Number of pages.</param>
-        /// <param name="pageSize">How many purchases per page.</param>
-        /// <returns>All purchases.</returns>
-        public async Task<IEnumerable<Purchase>> GetAllPurchasesAsync()
+        /// <param name="email">Email of the endpoint.</param>
+        /// <returns>All purchases with said email</returns>
+        public async Task<IEnumerable<Purchase>> GetPurchasesByEmailAsync(string email)
         {
             List<Purchase> purchases;
 
             try
             {
-                purchases = await _purchaseRepository.GetAllPurchasesAsync();
+                purchases = (List<Purchase>) await _purchaseRepository.GetPurchasesByEmailAsync(email);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new ServiceUnavailableException("There was a problem connecting to the database.");
+                throw new NotFoundException($"Could not find purchases with email: {email}");
             }
 
             return purchases;
+        }
+
+        /// <summary>
+        /// Retrieves all purchases from the database.
+        /// </summary>
+        /// <returns>All purchases.</returns>
+        public Task<IEnumerable<Purchase>> GetAllPurchasesAsync()
+        {
+            throw new NotFoundException("Page Unavailable purchases endpoint");
         }
 
         /// <summary>
@@ -53,8 +64,28 @@ namespace Catalyte.Apparel.Providers.Providers
         /// <returns>The persisted purchase with IDs.</returns>
         public async Task<Purchase> CreatePurchasesAsync(Purchase newPurchase)
         {
-            Purchase savedPurchase;
+            Product activeProduct;
 
+            foreach (LineItem lineItem in newPurchase.LineItems)
+            {
+                try
+                {
+                    activeProduct = await _productRepository.GetProductByIdAsync(lineItem.ProductId);
+                }
+
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    throw new ServiceUnavailableException("There was a problem connecting to the database.");
+                }
+                if (activeProduct.Active == false)
+                {
+                    throw new UnprocessableEntityException("Unprocessable Entity");
+                }
+            }
+
+            
+            Purchase savedPurchase;
             try
             {
                 savedPurchase = await _purchaseRepository.CreatePurchaseAsync(newPurchase);
@@ -64,8 +95,10 @@ namespace Catalyte.Apparel.Providers.Providers
                 _logger.LogError(ex.Message);
                 throw new ServiceUnavailableException("There was a problem connecting to the database.");
             }
-
+            
             return savedPurchase;
+            
         }
-    }
+        
+    } 
 }

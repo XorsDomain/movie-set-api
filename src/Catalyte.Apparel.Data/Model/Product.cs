@@ -10,6 +10,7 @@ namespace Catalyte.Apparel.Data.Model
     public class Product : BaseEntity
     {
 
+
         public string Name { get; set; }
 
         public string Sku { get; set; }
@@ -32,7 +33,19 @@ namespace Catalyte.Apparel.Data.Model
 
         public string GlobalProductCode { get; set; }
 
+        public string Brand { get; set; }
+
+        public string Material { get; set; }
+
+        public decimal Price { get; set; }
+
+        public int Quantity { get; set; }
+
+        public string ImageSrc { get; set; }
+
         public bool Active { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
 
         public override string ToString()
         {
@@ -48,7 +61,7 @@ namespace Catalyte.Apparel.Data.Model
                 if (ReferenceEquals(x, null)) return false;
                 if (ReferenceEquals(y, null)) return false;
                 if (x.GetType() != y.GetType()) return false;
-                return x.Name == y.Name && x.Description == y.Description && x.Demographic == y.Demographic && x.Category == y.Category && x.Type == y.Type && x.ReleaseDate.Equals(y.ReleaseDate) && x.PrimaryColorCode == y.PrimaryColorCode && x.SecondaryColorCode == y.SecondaryColorCode && x.StyleNumber == y.StyleNumber && x.GlobalProductCode == y.GlobalProductCode && x.Active == y.Active;
+                return x.Name == y.Name && x.Description == y.Description && x.Price == y.Price && x.Material == y.Material && x.Demographic == y.Demographic && x.Category == y.Category && x.Type == y.Type && x.Brand == y.Brand && x.ReleaseDate.Equals(y.ReleaseDate) && x.PrimaryColorCode == y.PrimaryColorCode && x.SecondaryColorCode == y.SecondaryColorCode && x.StyleNumber == y.StyleNumber && x.GlobalProductCode == y.GlobalProductCode && x.Active == y.Active;
             }
 
             public int GetHashCode(Product obj)
@@ -65,10 +78,10 @@ namespace Catalyte.Apparel.Data.Model
                 hashCode.Add(obj.StyleNumber);
                 hashCode.Add(obj.GlobalProductCode);
                 hashCode.Add(obj.Active);
+                
                 return hashCode.ToHashCode();
             }
         }
-
     }
 
 }

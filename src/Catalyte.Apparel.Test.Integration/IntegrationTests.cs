@@ -29,7 +29,7 @@ namespace Catalyte.Apparel.Test.Integration
                         services.AddDbContext<ApparelCtx>((options, context) =>
                         {
                             context.UseNpgsql("Host=localhost; Port=5432; Database=postgres_tests; UserName=postgres; Password=root");
-                        });
+                        }, ServiceLifetime.Transient);
 
                         var serviceProvider = services.BuildServiceProvider();
 

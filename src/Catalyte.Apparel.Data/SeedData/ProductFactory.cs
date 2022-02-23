@@ -12,7 +12,7 @@ namespace Catalyte.Apparel.Data.SeedData
     {
         Random _rand = new();
 
-        private List<string> _colors = new()
+        private readonly List<string> _colors = new()
         {
             "#000000", // white
             "#ffffff", // black
@@ -35,7 +35,7 @@ namespace Catalyte.Apparel.Data.SeedData
         {
             "Men",
             "Women",
-            "Kids"
+            "Children"
         };
         private readonly List<string> _categories = new()
         {
@@ -49,6 +49,31 @@ namespace Catalyte.Apparel.Data.SeedData
             "Skateboarding",
             "Boxing",
             "Weightlifting"
+        };
+
+        private readonly List<string> _materials = new()
+        {
+            "Cotton",
+            "Polyester",
+            "Microfiber",
+            "Nylon",
+            "Synthetic",
+            "Gore-Tex",
+            "Spandex",
+            "Calico",
+            "Bamboo-Fiber",          
+        };
+
+        private List<string> _brands = new()
+        {
+            "Nike",
+            "Reebok",
+            "Asics",
+            "Brooks",
+            "Skechers",
+            "Puma",
+            "Under Armor",
+            "Adidas"
         };
 
         private List<string> _adjectives = new()
@@ -68,7 +93,7 @@ namespace Catalyte.Apparel.Data.SeedData
             "Heavy Duty"
         };
 
-        private List<string> _types = new()
+        private readonly List<string> _types = new()
         {
             "Pant",
             "Short",
@@ -91,7 +116,7 @@ namespace Catalyte.Apparel.Data.SeedData
             "Pool Noodle"
         };
 
-        private List<string> _skuMods = new()
+        private readonly List<string> _skuMods = new()
         {
             "Blue",
             "Red",
@@ -113,18 +138,69 @@ namespace Catalyte.Apparel.Data.SeedData
             builder.Append('-');
             builder.Append(RandomString(3));
             builder.Append('-');
-            builder.Append(_skuMods[_rand.Next(0, 6)]);
+            builder.Append(_skuMods[_rand.Next(_skuMods.Count)]);
 
             return builder.ToString().ToUpper();
+        }
+
+        /// <summary>
+        /// Returns a random adjective from the list of adjectives.
+        /// </summary>
+        /// <returns>An adjective string.</returns>
+        private string GetRandomAdjective()
+        {
+            return _adjectives[_rand.Next(_adjectives.Count)];
         }
 
         /// <summary>
         /// Returns a random demographic from the list of demographics.
         /// </summary>
         /// <returns>A demographic string.</returns>
-        private string GetDemographic()
+        private string GetRandomDemographic()
         {
-            return _demographics[_rand.Next(0, 2)];
+            return _demographics[_rand.Next(_demographics.Count)];
+        }
+
+        /// <summary>
+        /// Returns a random brand from the list of brands.
+        /// </summary>
+        /// <returns>A brand string.</returns>
+        private string GetBrand()
+        {
+            return _brands[_rand.Next(0, _brands.Count)];
+        }
+
+        /// <summary>
+        /// Returns a random material from the list of materials.
+        /// </summary>
+        /// <returns>A material string.</returns>
+        private string GetMaterial()
+        {
+            return _materials[_rand.Next(0, _materials.Count)];
+        }
+
+        /// <summary>
+        /// Generates a random price between 9.99 and 500.00.
+        /// </summary>
+        /// <returns>A decimal with two decimal places representing the price.</returns>
+        private decimal GetPrice()
+        {
+            var result = new decimal((_rand.Next(999, 50000)));
+            return Math.Round((result) / 100, 2);
+        }
+
+        /// <summary>
+        /// Returns a random type from the list of types.
+        /// </summary>
+        /// <returns>A type string.</returns>
+        private string GetRandomType()
+        {
+            return _types[_rand.Next(0, _types.Count)];
+        }
+
+        private string GetColor()
+        {
+            return _colors[_rand.Next(0, _colors.Count)];
         }
 
         /// <summary>
@@ -146,20 +222,57 @@ namespace Catalyte.Apparel.Data.SeedData
         }
 
         /// <summary>
+        /// Generates a random Boolean.
+        /// </summary>
+        /// <returns>A Boolean.</returns>
+        private Boolean GetRandomBool(int id)
+        {
+            if (id == 1) return true;
+            return _rand.Next(2) == 1;
+        }
+
+        /// <summary>
+        /// Returns a random color from the list of colors.
+        /// </summary>
+        /// <returns>A color code string.</returns>
+        private string GetRandomColor()
+        {
+            return _colors[_rand.Next(_colors.Count)];
+        }
+
+        /// <summary>
+        /// Returns a random category from the list of categories.
+        /// </summary>
+        /// <returns>A category string.</returns>
+        private string GetRandomCategory()
+        {
+            return _categories[_rand.Next(_categories.Count)];
+        }
+
+        /// <summary>
+        /// Generates a random date between two dates.
+        /// </summary>
+        /// <returns>A random DateTime.</returns>
+        private DateTime GetRandomDate(DateTime startDate, DateTime endDate)
+        {
+            /// Potentially slow when called multiple times. Should maybe only create startDate and endDate vars once for entire product seed data.
+            int range = (endDate - startDate).Days;
+            return startDate.AddDays(_rand.Next(range));
+        }
+
+        /// <summary>
         /// Generates a number of random products based on input.
         /// </summary>
         /// <param name="numberOfProducts">The number of random products to generate.</param>
         /// <returns>A list of random products.</returns>
         public List<Product> GenerateRandomProducts(int numberOfProducts)
         {
-
             var productList = new List<Product>();
 
             for (var i = 0; i < numberOfProducts; i++)
             {
                 productList.Add(CreateRandomProduct(i + 1));
             }
-
             return productList;
         }
 
@@ -170,19 +283,32 @@ namespace Catalyte.Apparel.Data.SeedData
         /// <returns>A randomly generated product.</returns>
         private Product CreateRandomProduct(int id)
         {
+            // Create adjective, category, type, and demographic variables
+            // Used to maintain consistency across fields including Name and Description.
+            String randAdjective = GetRandomAdjective();
+            String randCategory = GetRandomCategory();
+            String randType = GetRandomType();
+            String randDemographic = GetRandomDemographic();
             return new Product
             {
                 Id = id,
-                Category = _categories[_rand.Next(0, 9)],
-                Type = "Short",
+                Name = randAdjective + " " + randCategory + " " + randType,
+                Description = randDemographic + "'s " + randAdjective + " " + randCategory + " " + randType,
+                Category = randCategory,
+                Type = randType,
                 Sku = GetRandomSku(),
-                Demographic = GetDemographic(),
+                PrimaryColorCode = GetColor(),
+                SecondaryColorCode = GetColor(),
+                Brand = GetBrand(),
+                Price = GetPrice(),
+                Material = GetMaterial(),
+                Demographic = randDemographic,
                 GlobalProductCode = GetRandomProductId(),
                 StyleNumber = GetStyleCode(),
-                ReleaseDate = DateTime.Now,
+                ReleaseDate = GetRandomDate(new DateTime(2015, 1, 1), DateTime.Today),
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow,
-                Active = false
+                Active = GetRandomBool(id)
             };
         }
 

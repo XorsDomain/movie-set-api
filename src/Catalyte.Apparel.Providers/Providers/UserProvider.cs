@@ -64,14 +64,13 @@ namespace Catalyte.Apparel.Providers.Providers
             // Authenticating the user ensures that the user is using Google to sign in
             string token = googleAuthService.GetTokenFromHeader(bearerToken);
             bool isAuthenticated = await googleAuthService.AuthenticateUserAsync(token, updatedUser);
-
             if (!isAuthenticated)
             {
                 _logger.LogError("Email in the request body does not match email from the JWT Token");
                 throw new BadRequestException("Email in the request body does not match email from JWT Token");
             }
 
-            // UPDATES USER
+            // VALIDATE USER TO UPDATE EXISTS
             User existingUser;
 
             try
@@ -95,13 +94,15 @@ namespace Catalyte.Apparel.Providers.Providers
 
             // GIVE THE USER ID IF NOT SPECIFIED IN BODY TO AVOID DUPLICATE USERS
             if (updatedUser.Id == default)
-            {
                 updatedUser.Id = id;
-            }
+
+            // TIMESTAMP THE UPDATE
+            updatedUser.DateModified = DateTime.UtcNow;
 
             try
             {
                 await _userRepository.UpdateUserAsync(updatedUser);
+                _logger.LogInformation("User updated.");
             }
             catch (Exception ex)
             {
