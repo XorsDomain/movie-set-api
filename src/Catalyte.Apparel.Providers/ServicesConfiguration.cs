@@ -11,10 +11,7 @@ namespace Catalyte.Apparel.Providers
     {
         public static IServiceCollection AddProviders(this IServiceCollection services)
         {
-            services.AddScoped<IProductProvider, ProductProvider>();
-            services.AddScoped<IPurchaseProvider, PurchaseProvider>();
-            services.AddScoped<IUserProvider, UserProvider>();
-            services.AddScoped<IPromoProvider, PromoProvider>();
+            services.AddScoped<IMovieProvider, MovieProvider>();
 
             return services;
         }

@@ -30,10 +30,7 @@ namespace Catalyte.Apparel.Data
             });
 
             services.AddScoped<IApparelCtx>(provider => provider.GetService<ApparelCtx>());
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IPromoRepository, PromoRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
 
             return services;
 

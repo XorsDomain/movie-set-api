@@ -11,16 +11,9 @@ namespace Catalyte.Apparel.Data.Context
     public interface IApparelCtx
     {
 
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Movie> Movies { get; set; }
 
-        public DbSet<LineItem> LineItems { get; set; }
-
-        public DbSet<Purchase> Purchases { get; set; }
-
-        public DbSet<User> Users { get; set; }
-
-        public DbSet<Promo> Promos { get; set; }
-        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());
     }

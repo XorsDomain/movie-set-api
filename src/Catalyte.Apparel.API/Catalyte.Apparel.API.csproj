@@ -39,4 +39,8 @@
     <None Include="C:\Users\mstonesifer\Training_6-1-21_Code\Training_Team\sports-apparel-api-csharp\src\Catalyte.Apparel.API\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapper\" />
+  </ItemGroup>
+
 </Project>

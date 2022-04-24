@@ -51,30 +51,6 @@ namespace Catalyte.Apparel.Providers.Auth
             }
         }
 
-        /// <summary>
-        /// Provides .NET implementation of Google backend authentication.
-        /// 
-        /// SEE DOCUMENTATION: https://developers.google.com/identity/sign-in/web/backend-auth
-        /// </summary>
-        /// <param name="idToken">JWT Token</param>
-        /// <param name="user">User to validate.</param>
-        /// <returns>Boolean if the user has been validated.</returns>
-        public async Task<bool> AuthenticateUserAsync(string token, User user)
-        {
-            var userInfo = await ValidateIdTokenAndGetUserInfoAsync(token);
-
-            // GET EMAIL FROM GOOGLE TOKEN
-            string googleEmail = userInfo.Email;
-
-            // VERIFY TOKEN IS NOT NULL
-            if (string.IsNullOrWhiteSpace(googleEmail))
-            {
-                return false;
-            }
-
-            // AUTHENTICATE USER
-            return googleEmail.Equals(user.Email);
-        }
     }
 }
 
