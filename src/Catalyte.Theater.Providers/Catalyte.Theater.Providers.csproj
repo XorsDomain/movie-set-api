@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Catalyte.Theater.Data\Catalyte.Theater.Data.csproj" />
+    <ProjectReference Include="..\Catalyte.Theater.DTOs\Catalyte.Theater.DTOs.csproj" />
+    <ProjectReference Include="..\Catalyte.Theater.Utilities\Catalyte.Theater.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
