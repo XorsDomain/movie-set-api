@@ -1,10 +1,10 @@
-﻿# .Net Sports Apparel API
+﻿# .Net Theater Entertainment API
 
 ## Getting Started
 
 ### Start the Server
 
-- Click the drop down arrow next to the App Runner button and select `Apparel.Catalyte.API`
+- Click the drop down arrow next to the App Runner button and select `Catalyte.Theater.API`
 - Click Build > Build Solution
 - Click the App Runner button
 
@@ -43,9 +43,6 @@ https://marketplace.visualstudio.com/items?itemName=MadsKristensen.AddNewFile
 This is some helpful documentation explaing the NuGet package manager.
 https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-powershell
 
-#### Google Authenticator
-https://www.nuget.org/packages/GoogleAuthenticator/
-
 #### Entity Framework Core
 This is the heart of the Entity Framework tools.
 `Install-Package Microsoft.EntityFrameworkCore -Version 5.0.10`
@@ -60,4 +57,10 @@ Also known as Swagger, this tool creates an interface for the API when you run t
 https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-5.0&tabs=visual-studio
 
 
- 
+#### Postman Collection
+Attatched is the postman collection link with all requests in it. All requests will have pre-filled fields under the "Body" section. 
+https://www.getpostman.com/collections/4706d817b9d1799d31b4
+
+#### Fine Code Coverage
+Code coverage will occur when tests are ran. To run tests, go to the test tab and click "Run All Tests."
+
